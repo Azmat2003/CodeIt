@@ -1,0 +1,14 @@
+# Ignore node_modules folder
+node_modules/
+
+# Ignore log files
+*.log
+
+# Ignore .env file
+.env
+
+# Ignore all .DS_Store files (macOS)
+.DS_Store
+
+# Ignore build folder
+/dist
