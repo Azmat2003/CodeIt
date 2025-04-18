@@ -314,7 +314,7 @@ app.get("/question/:id", (req, res) => {
 });
 
 // Listining on Port
-
+require('dotenv').config();
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
