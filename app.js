@@ -82,7 +82,10 @@ app.get("/", (req, res) => {
 
 // GET Route to perform our search
 app.get("/search", (req, res) => {
-  const query = req.query.query;
+  const query = req.query.query?.trim();
+  if (!query) {
+    return res.json([]);
+  }
   const oldString = query.split(" ");
   const newString = removeStopwords(oldString);
   newString.sort(); // newString is an array
@@ -272,13 +275,23 @@ app.get("/search", (req, res) => {
 
 app.get("/question/:id", (req, res) => {
   const id = Number(req.params.id);
+
+  if (!Number.isInteger(id) || id < 0 || id >= titles.length) {
+    return res.status(404).send("Question not found");
+  }
+
   const str = path.join(__dirname, "Problems");
   const str1 = path.join(str, `problem_text_${id + 1}.txt`);
-  let text = fs.readFileSync(str1).toString();
-  // console.log(text);
+  let text;
+  try {
+    text = fs.readFileSync(str1).toString();
+  } catch (err) {
+    return res.status(404).send("Question not found");
+  }
+
   if (id <= 1773) {
-    text = text.split("ListShare");
-    text = text[1];
+    const parts = text.split("ListShare");
+    text = parts.length > 1 ? parts[1] : parts[0];
   }
 
   var find = "\n";
@@ -286,13 +299,13 @@ app.get("/question/:id", (req, res) => {
 
   text = text.replace(re, "<br/>");
 
-  let title = titles[id];
-  title = title.split("-");
+  let title = titles[id] || "";
+  const titleParts = title.split("-");
   let temp = "";
-  for (let i = 0; i < title.length; i++) {
-    temp += title[i] + " ";
+  for (let i = 0; i < titleParts.length; i++) {
+    temp += titleParts[i] + " ";
   }
-  title = temp;
+  title = temp.trim();
   title = title.capitalize();
   let type = 0;
   if (id < 1774) type = "Leetcode";

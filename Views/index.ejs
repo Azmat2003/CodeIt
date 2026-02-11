@@ -227,6 +227,11 @@
           questionText[i].querySelector("p").innerHTML = "";
         }
         const query = questionElement.value;
+        if (!query) {
+          loadingSection.style.display = "none";
+          questionElement.focus();
+          return;
+        }
 
         try {
           //   console.log("HELLO");
@@ -249,6 +254,7 @@
           }
 
           console.log(data);
+          questionElement.focus();
         } catch (error) {
           alert(error);
         }

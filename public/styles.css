@@ -433,3 +433,8 @@ button {
     margin-top: 2rem;
   }
 }
+
+.loading-div,
+.no-results {
+  display: none;
+}
