@@ -68,9 +68,9 @@ Object.defineProperty(String.prototype, "capitalize", {
 
 // Setting EJS as our view engine
 app.set("view engine", "ejs");
-
+app.set("views", path.join(__dirname, "views"));
 // Path to our Public Assets Folder
-app.use(express.static(path.join(__dirname, "/public")));
+app.use(express.static(path.join(__dirname, "public")));
 
 // Making a dictionary with all our keywords
 const spellcheck = new natural.Spellcheck(keywords);
