@@ -240,21 +240,33 @@ app.get("/search", (req, res) => {
   let response = [];
   let nonZero = 0;
 
-  for (let i = 0; i < 10; i++) {
+  const resultsToShow = Math.min(10, arr.length);
+  for (let i = 0; i < resultsToShow; i++) {
+    if (!arr[i]) continue;
     if (arr[i].sim != 0) nonZero++;
     const str = path.join(__dirname, "Problems");
     const str1 = path.join(str, `problem_text_${arr[i].id + 1}.txt`);
-    let question = fs.readFileSync(str1).toString().split("\n");
+
+    let question;
+    try {
+      question = fs.readFileSync(str1).toString().split("\n");
+    } catch (err) {
+      console.error("Failed to read problem file:", str1, err.message);
+      continue;
+    }
+
     let n = question.length;
     let problem = "";
 
     if (arr[i].id <= 1773) {
-      problem = question[0].split("ListShare")[1] + " ";
+      const parts = question[0].split("ListShare");
+      problem = (parts.length > 1 ? parts[1] : parts[0]) + " ";
       if (n > 1) problem += question[1];
     } else {
       problem = question[0] + " ";
       if (n > 1) problem += question[1];
     }
+
     response.push({
       id: arr[i].id,
       title: titles[arr[i].id],
